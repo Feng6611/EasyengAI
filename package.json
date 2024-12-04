@@ -1,0 +1,74 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "easyeng-ai",
+  "title": "Easyeng AI",
+  "description": "Make English writing easy with AI",
+  "icon": "easyeng-icon.png",
+  "author": "chenchen",
+  "categories": [
+    "Productivity",
+    "Developer Tools"
+  ],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "index",
+      "title": "Easyeng AI",
+      "description": "Start writing with AI assistance",
+      "mode": "view",
+      "icon": "easyeng-icon.png"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "style",
+      "type": "dropdown",
+      "required": false,
+      "title": "Writing Style",
+      "description": "Select writing style",
+      "default": "professional",
+      "data": [
+        {
+          "title": "Professional",
+          "value": "professional"
+        },
+        {
+          "title": "Casual",
+          "value": "casual"
+        },
+        {
+          "title": "Academic",
+          "value": "academic"
+        },
+        {
+          "title": "Creative",
+          "value": "creative"
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.55.2"
+  },
+  "devDependencies": {
+    "@types/node": "18.8.3",
+    "@types/react": "18.0.9",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^7.32.0",
+    "typescript": "^4.4.3"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "lint": "ray lint",
+    "publish": "ray publish"
+  },
+  "version": "1.0.0",
+  "keywords": [
+    "english",
+    "writing",
+    "ai",
+    "productivity"
+  ]
+} 

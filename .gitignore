@@ -1,0 +1,18 @@
+# 文档相关
+docs/describe.md
+
+# 常规忽略文件
+.DS_Store
+node_modules/
+dist/
+.env
+*.log
+
+# IDE 相关
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Raycast 特定
+.raycast-debug.log
