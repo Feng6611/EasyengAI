@@ -7,6 +7,7 @@ export enum SupportedModel {
   AnthropicClaudeHaiku = "anthropic-claude-haiku",
   Llama3_1_8b = "llama3.1-8b",
   Llama3_1_70b = "llama3.1-70b",
+  GeminiFlash = "gemini-1.5-flash",
 }
 
 export enum WritingStyle {

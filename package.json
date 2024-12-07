@@ -5,13 +5,21 @@
   "description": "AI-powered English writing assistant",
   "icon": "command-icon.png",
   "author": "chen",
-  "categories": ["Productivity"],
+  "categories": [
+    "Productivity"
+  ],
   "license": "MIT",
   "commands": [
     {
       "name": "index",
       "title": "EasyEng AI",
       "description": "AI-powered English writing assistant",
+      "mode": "view"
+    },
+    {
+      "name": "test",
+      "title": "Test AI Connection",
+      "description": "Test the connection to AI models",
       "mode": "view"
     }
   ],
@@ -47,8 +55,19 @@
         {
           "title": "Llama3.1 70B",
           "value": "llama3.1-70b"
+        },
+        {
+          "title": "Gemini 1.5 Flash",
+          "value": "gemini-1.5-flash"
         }
       ]
+    },
+    {
+      "name": "openrouterApiKey",
+      "title": "OpenRouter API Key",
+      "description": "Your OpenRouter API key for accessing Gemini models",
+      "type": "password",
+      "required": false
     },
     {
       "name": "style",
@@ -79,11 +98,14 @@
   ],
   "dependencies": {
     "@raycast/api": "^1.64.4",
+    "dotenv": "^16.4.7",
+    "node-fetch": "^2.7.0",
     "openai": "^4.20.1"
   },
   "devDependencies": {
     "@raycast/utils": "^1.10.1",
     "@types/node": "^20.10.3",
+    "@types/node-fetch": "^2.6.11",
     "@types/react": "^18.2.42",
     "typescript": "^5.3.2"
   },
@@ -94,4 +116,4 @@
     "lint": "ray lint",
     "publish": "npx @raycast/api@latest publish"
   }
-} 
+}

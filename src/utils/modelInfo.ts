@@ -38,6 +38,11 @@ export const modelInfo: Record<SupportedModel, ModelDetails> = {
     provider: "Meta",
     icon: Icon.Terminal,
   },
+  [SupportedModel.GeminiFlash]: {
+    name: "Gemini 1.5 Flash",
+    provider: "OpenRouter",
+    icon: Icon.Bolt,
+  },
 };
 
 export { SupportedModel }; 

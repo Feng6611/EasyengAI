@@ -1,18 +1,22 @@
 import OpenAI from "openai";
 import { getPreferenceValues } from "@raycast/api";
+import { SupportedModel } from "../utils/types";
+import { handleError } from "../utils/errorHandler";
 
 interface Preferences {
   apiKey: string;
 }
 
+const preferences = getPreferenceValues<Preferences>();
+
 const openai = new OpenAI({
-  apiKey: getPreferenceValues<Preferences>().apiKey,
+  apiKey: preferences.apiKey,
 });
 
-export async function polishText(text: string): Promise<string> {
+export async function polishText(text: string, model: SupportedModel): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: model,
       messages: [
         {
           role: "system",
@@ -27,15 +31,15 @@ export async function polishText(text: string): Promise<string> {
 
     return response.choices[0]?.message?.content || text;
   } catch (error) {
-    console.error("Error polishing text:", error);
+    handleError(error, "polish text");
     throw error;
   }
 }
 
-export async function translateMixedText(text: string): Promise<string> {
+export async function translateMixedText(text: string, model: SupportedModel): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: model,
       messages: [
         {
           role: "system",
@@ -50,7 +54,7 @@ export async function translateMixedText(text: string): Promise<string> {
 
     return response.choices[0]?.message?.content || text;
   } catch (error) {
-    console.error("Error translating text:", error);
+    handleError(error, "translate text");
     throw error;
   }
 } 

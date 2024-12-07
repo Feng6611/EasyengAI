@@ -7,6 +7,8 @@ describe.md
 node_modules/
 dist/
 .env
+.env.local
+.env.*.local
 *.log
 
 # IDE 相关
