@@ -27,5 +27,5 @@ export type SupportedModel =
   | "openai-gpt-4o-mini"
   | "anthropic-claude-sonnet"
   | "anthropic-claude-haiku"
-  | "llama3.1-8b
+  | "llama3.1-8b"
   | "llama3.1-70b"; 
