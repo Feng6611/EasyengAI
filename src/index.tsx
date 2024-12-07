@@ -1,140 +1,90 @@
-import { ActionPanel, Action, List, showToast, Toast, Icon, AI } from "@raycast/api";
-import { useState, useEffect } from "react";
+import { ActionPanel, Action, List, showToast, Toast, Icon } from "@raycast/api";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { processInput } from "./services/wordCompletion";
 import { polishText } from "./services/ai";
-import { Suggestion } from "./utils/types";
+import { Suggestion, SupportedModel, WritingStyle } from "./utils/types";
 import { debounce, handleError } from "./utils/helpers";
+import { modelInfo } from "./utils/modelInfo";
 
 // Debug: Log available models
-console.log("Available AI Models:", Object.keys(AI.Model));
-
-const modelInfo: Record<string, { name: string; provider: string; icon: Icon }> = {
-  "openai-gpt-4o": { 
-    name: "GPT4o",
-    provider: "OpenAI",
-    icon: Icon.Stars
-  },
-  "openai-gpt-4o-mini": {
-    name: "GPT4omini",
-    provider: "OpenAI", 
-    icon: Icon.Stars
-  },
-  "anthropic-claude-sonnet": {
-    name: "Claude Sonnet 3.5",
-    provider: "Anthropic",
-    icon: Icon.Person
-  },
-  "anthropic-claude-haiku": {
-    name: "Claude Haiku 3.5",
-    provider: "Anthropic",
-    icon: Icon.Person
-  },
-  "llama3.1-8b": {
-    name: "Llama3.1 8B",
-    provider: "Meta",
-    icon: Icon.Terminal
-  },
-  "llama3.1-70b": {
-    name: "Llama3.1 70B",
-    provider: "Meta",
-    icon: Icon.Terminal
-  }
-};
-
-const getModelInfo = (model: AI.Model): { name: string; provider: string; icon: Icon } => {
-  console.log("Current model:", model);
-  
-  const result = modelInfo[model] || { name: "Unknown Model", provider: "Unknown", icon: Icon.QuestionMark };
-  console.log("Model info result:", result);
-  return result;
-};
+// console.log("Available AI Models:", Object.keys(AI.Model));
 
 export default function Command() {
   const [input, setInput] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [currentModel, setCurrentModel] = useState<AI.Model>("openai-gpt-4o" as AI.Model);
+  const [currentModel, setCurrentModel] = useState<SupportedModel>(SupportedModel.OpenAIGPT4o);
   const [isModelSwitching, setIsModelSwitching] = useState<boolean>(false);
 
-  const debouncedProcessInput = debounce(async (text: string) => {
-    if (!text.trim()) {
-      setSuggestions([]);
-      return;
-    }
+  const debouncedProcessInput = useMemo(
+    () =>
+      debounce(async (text: string) => {
+        if (!text.trim()) {
+          setSuggestions([]);
+          return;
+        }
 
-    setIsLoading(true);
-    try {
-      const results = await processInput(text, { model: currentModel });
-      setSuggestions(
-        results.map((text) => ({
-          text,
-          type: "completion",
-        }))
-      );
-    } catch (error) {
-      if (error instanceof Error) {
-        handleError(error);
-      } else {
-        showToast({
-          style: Toast.Style.Failure,
-          title: "Processing Failed",
-          message: "Unable to process input text",
-        });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }, 300);
+        setIsLoading(true);
+        try {
+          const results = await processInput(text, { model: currentModel });
+          setSuggestions(
+            results.map((text) => ({
+              text,
+              type: "completion",
+            }))
+          );
+        } catch (error) {
+          handleError(error);
+        } finally {
+          setIsLoading(false);
+        }
+      }, 300),
+    [currentModel]
+  );
 
   useEffect(() => {
     debouncedProcessInput(input);
-  }, [input, currentModel]);
+  }, [input, debouncedProcessInput]);
 
-  const handlePolish = async (text: string) => {
+  const handlePolish = useCallback(async (text: string) => {
     if (!text.trim()) return;
 
     try {
       setIsLoading(true);
       const polished = await polishText(text, {
         model: currentModel,
-        style: "professional"
+        style: WritingStyle.Professional,
       });
-      
-      setSuggestions([
-        ...suggestions,
+
+      setSuggestions((prev) => [
+        ...prev,
         {
           text: polished,
           type: "polish",
         },
       ]);
     } catch (error) {
-      if (error instanceof Error) {
-        handleError(error);
-      } else {
-        showToast({
-          style: Toast.Style.Failure,
-          title: "Polish Failed",
-          message: "Unable to polish text",
-        });
-      }
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentModel]);
 
-  const handleModelSwitch = async (model: AI.Model) => {
+  const handleModelSwitch = useCallback(async (model: SupportedModel) => {
     setIsModelSwitching(true);
     try {
-      await setCurrentModel(model);
+      setCurrentModel(model);
     } finally {
       setIsModelSwitching(false);
     }
-  };
+  }, []);
+
+  const currentModelInfo = useMemo(() => modelInfo[currentModel], [currentModel]);
 
   return (
     <List
       isLoading={isLoading}
-      searchBarPlaceholder={`Start typing to get writing suggestions using ${getModelInfo(currentModel).name}...`}
+      searchBarPlaceholder={`Start typing to get writing suggestions using ${currentModelInfo.name}...`}
       onSearchTextChange={setInput}
       throttle
       actions={
@@ -145,21 +95,14 @@ export default function Command() {
               icon={Icon.LightBulb}
               shortcut={{ modifiers: ["cmd"], key: "m" }}
             >
-              {[
-                "openai-gpt-4o",
-                "openai-gpt-4o-mini",
-                "anthropic-claude-sonnet",
-                "anthropic-claude-haiku",
-                "llama3.1-8b",
-                "llama3.1-70b"
-              ].map((model) => {
-                const modelInfo = getModelInfo(model as AI.Model);
+              {Object.values(SupportedModel).map((model: SupportedModel) => {
+                const info = modelInfo[model];
                 return (
                   <Action
                     key={model}
-                    title={`${modelInfo.name} - ${modelInfo.provider}`}
-                    icon={modelInfo.icon}
-                    onAction={() => handleModelSwitch(model as AI.Model)}
+                    title={`${info.name} - ${info.provider}`}
+                    icon={info.icon}
+                    onAction={() => handleModelSwitch(model)}
                   />
                 );
               })}
@@ -174,7 +117,7 @@ export default function Command() {
             key={index}
             title={suggestion.text}
             icon={suggestion.type === "polish" ? Icon.Wand : Icon.Text}
-            subtitle={`${getModelInfo(currentModel).name} - ${getModelInfo(currentModel).provider}`}
+            subtitle={`${currentModelInfo.name} - ${currentModelInfo.provider}`}
             actions={
               <ActionPanel>
                 <ActionPanel.Section>
@@ -196,21 +139,14 @@ export default function Command() {
                     icon={Icon.LightBulb}
                     shortcut={{ modifiers: ["cmd"], key: "m" }}
                   >
-                    {[
-                      "openai-gpt-4o",
-                      "openai-gpt-4o-mini",
-                      "anthropic-claude-sonnet",
-                      "anthropic-claude-haiku",
-                      "llama3.1-8b",
-                      "llama3.1-70b"
-                    ].map((model) => {
-                      const modelInfo = getModelInfo(model as AI.Model);
+                    {Object.values(SupportedModel).map((model: SupportedModel) => {
+                      const info = modelInfo[model];
                       return (
                         <Action
                           key={model}
-                          title={`${modelInfo.name} - ${modelInfo.provider}`}
-                          icon={modelInfo.icon}
-                          onAction={() => handleModelSwitch(model as AI.Model)}
+                          title={`${info.name} - ${info.provider}`}
+                          icon={info.icon}
+                          onAction={() => handleModelSwitch(model)}
                         />
                       );
                     })}

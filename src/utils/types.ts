@@ -1,13 +1,29 @@
 import { AI } from "@raycast/api";
 
+export enum SupportedModel {
+  OpenAIGPT4o = "openai-gpt-4o",
+  OpenAIGPT4oMini = "openai-gpt-4o-mini",
+  AnthropicClaudeSonnet = "anthropic-claude-sonnet",
+  AnthropicClaudeHaiku = "anthropic-claude-haiku",
+  Llama3_1_8b = "llama3.1-8b",
+  Llama3_1_70b = "llama3.1-70b",
+}
+
+export enum WritingStyle {
+  Professional = "professional",
+  Casual = "casual",
+  Academic = "academic",
+  Creative = "creative",
+}
+
 export interface AIPreferences {
-  aiModel: AI.Model;
-  style: string;
+  aiModel: SupportedModel;
+  style: WritingStyle;
 }
 
 export interface AIRequestOptions {
-  model?: AI.Model;
-  style?: string;
+  model?: SupportedModel;
+  style?: WritingStyle;
 }
 
 export interface Suggestion {
@@ -20,12 +36,4 @@ export interface WritingState {
   suggestions: Suggestion[];
   isLoading: boolean;
   error?: string;
-}
-
-export type SupportedModel = 
-  | "openai-gpt-4o"
-  | "openai-gpt-4o-mini"
-  | "anthropic-claude-sonnet"
-  | "anthropic-claude-haiku"
-  | "llama3.1-8b"
-  | "llama3.1-70b"; 
+} 

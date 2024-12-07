@@ -17,12 +17,12 @@ export function debounce<T extends (...args: any[]) => any>(
   };
 }
 
-export function handleError(error: Error) {
-  console.error(error);
+export function handleError(error: unknown, context?: string) {
+  console.error(context ? `Error in ${context}:` : 'Error:', error);
   showToast({
     style: Toast.Style.Failure,
-    title: "Error",
-    message: error.message,
+    title: context ? `${context} Failed` : 'Error',
+    message: error instanceof Error ? error.message : 'An unexpected error occurred',
   });
 }
 
