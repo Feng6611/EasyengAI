@@ -1,31 +1,61 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "easyeng-ai",
-  "title": "Easyeng AI",
-  "description": "Make English writing easy with AI",
-  "icon": "easyeng-icon.png",
-  "author": "chenchen",
-  "categories": [
-    "Productivity",
-    "Developer Tools"
-  ],
+  "title": "EasyEng AI",
+  "description": "AI-powered English writing assistant",
+  "icon": "command-icon.png",
+  "author": "chen",
+  "categories": ["Productivity"],
   "license": "MIT",
   "commands": [
     {
       "name": "index",
-      "title": "Easyeng AI",
-      "description": "Start writing with AI assistance",
-      "mode": "view",
-      "icon": "easyeng-icon.png"
+      "title": "EasyEng AI",
+      "description": "AI-powered English writing assistant",
+      "mode": "view"
     }
   ],
   "preferences": [
     {
-      "name": "style",
+      "name": "aiModel",
+      "title": "Default AI Model",
+      "description": "Choose the default AI model to use",
       "type": "dropdown",
-      "required": false,
+      "required": true,
+      "default": "openai-gpt-4o",
+      "data": [
+        {
+          "title": "GPT4o",
+          "value": "openai-gpt-4o"
+        },
+        {
+          "title": "GPT4omini",
+          "value": "openai-gpt-4o-mini"
+        },
+        {
+          "title": "Claude Sonnet 3.5",
+          "value": "anthropic-claude-sonnet"
+        },
+        {
+          "title": "Claude Haiku 3.5",
+          "value": "anthropic-claude-haiku"
+        },
+        {
+          "title": "Llama3.1 8B",
+          "value": "llama3.1-8b"
+        },
+        {
+          "title": "Llama3.1 70B",
+          "value": "llama3.1-70b"
+        }
+      ]
+    },
+    {
+      "name": "style",
       "title": "Writing Style",
-      "description": "Select writing style",
+      "description": "Choose the default writing style",
+      "type": "dropdown",
+      "required": true,
       "default": "professional",
       "data": [
         {
@@ -48,27 +78,20 @@
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.55.2"
+    "@raycast/api": "^1.64.4",
+    "openai": "^4.20.1"
   },
   "devDependencies": {
-    "@types/node": "18.8.3",
-    "@types/react": "18.0.9",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
-    "eslint": "^7.32.0",
-    "typescript": "^4.4.3"
+    "@raycast/utils": "^1.10.1",
+    "@types/node": "^20.10.3",
+    "@types/react": "^18.2.42",
+    "typescript": "^5.3.2"
   },
   "scripts": {
     "build": "ray build -e dist",
     "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
     "lint": "ray lint",
-    "publish": "ray publish"
-  },
-  "version": "1.0.0",
-  "keywords": [
-    "english",
-    "writing",
-    "ai",
-    "productivity"
-  ]
+    "publish": "npx @raycast/api@latest publish"
+  }
 } 

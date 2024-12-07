@@ -77,13 +77,14 @@
 4. **风格可选**：支持多种写作风格
 5. **无缝集成**：与 Raycast 完美融合
 
-## 使用建议
+## 支持模型
+GPT4o:OpenAI_GPT4o
+GPT4omini:OpenAI_GPT4o-mini
+Claude Sonnet 3.5:Anthropic_Claude_Sonnet
+Claude Haiku 3.5:Anthropic_Claude_Haiku
+Llama3.1 8B:Llama3.1_8B
+Llama3.1 70B:Llama3.1_70B
 
-1. 根据任务选择合适的 AI 模型：
-   - GPT-4：需要高精确度时
-   - Claude Sonnet：需要平衡效率和质量时
-2. 善用写作风格切换，适应不同场景
-3. 熟练使用快捷键，提高效率
 
 ## 未来规划
 

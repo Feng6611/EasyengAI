@@ -8,7 +8,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 type ExtensionPreferences = {
-  /** Writing Style - Select writing style */
+  /** Default AI Model - Choose the default AI model to use */
+  "aiModel": "openai-gpt-4o" | "openai-gpt-4o-mini" | "anthropic-claude-sonnet" | "anthropic-claude-haiku" | "llama3.1-8b" | "llama3.1-70b",
+  /** Writing Style - Choose the default writing style */
   "style": "professional" | "casual" | "academic" | "creative"
 }
 
